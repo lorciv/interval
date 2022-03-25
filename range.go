@@ -35,7 +35,12 @@ type event struct {
 
 func eventify(ranges []Range) []event {
 	var events []event
+
 	for _, r := range ranges {
+		if r.Start > r.End {
+			r.Start, r.End = r.End, r.Start
+		}
+
 		events = append(events, event{
 			typ:      eventStart,
 			time:     r.Start,
@@ -46,6 +51,7 @@ func eventify(ranges []Range) []event {
 			priority: r.Priority,
 		})
 	}
+
 	sort.Slice(events, func(i, j int) bool {
 		d := events[i].time - events[j].time
 		if d == 0 {
@@ -56,6 +62,7 @@ func eventify(ranges []Range) []event {
 		}
 		return d < 0
 	})
+
 	return events
 }
 

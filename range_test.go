@@ -22,6 +22,19 @@ func TestOverlap(t *testing.T) {
 			},
 		},
 		{
+			descr: "disjoint inverted",
+			input: []Range{
+				{Start: 10, End: 5, Priority: 0},
+				{Start: 25, End: 20, Priority: 2},
+				{Start: 12, End: 16, Priority: 1},
+			},
+			want: []Range{
+				{Start: 5, End: 10, Priority: 0},
+				{Start: 12, End: 16, Priority: 1},
+				{Start: 20, End: 25, Priority: 2},
+			},
+		},
+		{
 			descr: "adjacent",
 			input: []Range{
 				{Start: 5, End: 10, Priority: 0},
@@ -76,6 +89,24 @@ func TestOverlap(t *testing.T) {
 				{Start: 10, End: 15, Priority: 0},
 				{Start: 15, End: 20, Priority: 1},
 				{Start: 20, End: 25, Priority: 2},
+			},
+		},
+		{
+			descr: "single range",
+			input: []Range{
+				{Start: 5, End: 23, Priority: 0},
+			},
+			want: []Range{
+				{Start: 5, End: 23, Priority: 0},
+			},
+		},
+		{
+			descr: "negative start",
+			input: []Range{
+				{Start: -5, End: 23, Priority: 0},
+			},
+			want: []Range{
+				{Start: -5, End: 23, Priority: 0},
 			},
 		},
 	}
