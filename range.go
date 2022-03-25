@@ -8,16 +8,16 @@ import (
 	"sort"
 )
 
-// Range represents an interval (e.g. a time interval) from start to end. Start is included,
-// end is excluded. Ranges can be assigned a non-negative integer that represents its priority.
+// Interval represents an interval of values from start to end (e.g. a time interval). Start is included,
+// end is excluded. Intervals can be assigned a non-negative integer that represents its priority.
 // Increasing numbers (0, 1, 2, 3...) represent decreasing priority, with 0 being the highest.
-type Range struct {
+type Interval struct {
 	Start, End int
 	Priority   int
 }
 
-func (p Range) String() string {
-	return fmt.Sprintf("{%d -> %d prio %d}", p.Start, p.End, p.Priority)
+func (v Interval) String() string {
+	return fmt.Sprintf("{%d -> %d prio %d}", v.Start, v.End, v.Priority)
 }
 
 type eventType int
@@ -33,22 +33,22 @@ type event struct {
 	priority int
 }
 
-func eventify(ranges []Range) []event {
+func eventify(intervals []Interval) []event {
 	var events []event
 
-	for _, r := range ranges {
-		if r.Start > r.End {
-			r.Start, r.End = r.End, r.Start
+	for _, v := range intervals {
+		if v.Start > v.End {
+			v.Start, v.End = v.End, v.Start
 		}
 
 		events = append(events, event{
 			typ:      eventStart,
-			time:     r.Start,
-			priority: r.Priority,
+			time:     v.Start,
+			priority: v.Priority,
 		}, event{
 			typ:      eventEnd,
-			time:     r.End,
-			priority: r.Priority,
+			time:     v.End,
+			priority: v.Priority,
 		})
 	}
 
@@ -82,14 +82,15 @@ func (m *multiCounter) decr(priority int) {
 	(*m)[priority]--
 }
 
-// Overlap combines a list of potentially overlapping ranges into a list of sequential ranges, which are guaranteed not to overlap.
-// Generated ranges are assigned the highest priority (i.e. lowest value) computed from the input.
-func Overlap(ranges []Range) []Range {
-	var sequence []Range
+// Overlap combines a list of potentially overlapping intervals into a list of sequential intervals,
+// which are guaranteed not to overlap. Generated intervals are assigned the highest priority (i.e. lowest value)
+// computed from the input.
+func Overlap(intervals []Interval) []Interval {
+	var sequence []Interval
 
 	curPrio := math.MaxInt // current priority
 	var count multiCounter
-	for _, e := range eventify(ranges) {
+	for _, e := range eventify(intervals) {
 		switch e.typ {
 		case eventStart:
 			count.incr(e.priority)
@@ -111,7 +112,7 @@ func Overlap(ranges []Range) []Range {
 				sequence[last].End = e.time
 			}
 			if prio < math.MaxInt {
-				sequence = append(sequence, Range{
+				sequence = append(sequence, Interval{
 					Start:    e.time,
 					Priority: prio,
 				})

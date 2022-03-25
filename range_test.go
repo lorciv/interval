@@ -5,17 +5,17 @@ import "testing"
 func TestOverlap(t *testing.T) {
 	tests := []struct {
 		descr string
-		input []Range
-		want  []Range
+		input []Interval
+		want  []Interval
 	}{
 		{
 			descr: "disjoint",
-			input: []Range{
+			input: []Interval{
 				{Start: 5, End: 10, Priority: 0},
 				{Start: 20, End: 25, Priority: 2},
 				{Start: 12, End: 16, Priority: 1},
 			},
-			want: []Range{
+			want: []Interval{
 				{Start: 5, End: 10, Priority: 0},
 				{Start: 12, End: 16, Priority: 1},
 				{Start: 20, End: 25, Priority: 2},
@@ -23,12 +23,12 @@ func TestOverlap(t *testing.T) {
 		},
 		{
 			descr: "disjoint inverted",
-			input: []Range{
+			input: []Interval{
 				{Start: 10, End: 5, Priority: 0},
 				{Start: 25, End: 20, Priority: 2},
 				{Start: 12, End: 16, Priority: 1},
 			},
-			want: []Range{
+			want: []Interval{
 				{Start: 5, End: 10, Priority: 0},
 				{Start: 12, End: 16, Priority: 1},
 				{Start: 20, End: 25, Priority: 2},
@@ -36,13 +36,13 @@ func TestOverlap(t *testing.T) {
 		},
 		{
 			descr: "adjacent",
-			input: []Range{
+			input: []Interval{
 				{Start: 5, End: 10, Priority: 0},
 				{Start: 10, End: 20, Priority: 1},
 				{Start: 20, End: 23, Priority: 2},
 				{Start: 23, End: 26, Priority: 2},
 			},
-			want: []Range{
+			want: []Interval{
 				{Start: 5, End: 10, Priority: 0},
 				{Start: 10, End: 20, Priority: 1},
 				{Start: 20, End: 26, Priority: 2},
@@ -50,12 +50,12 @@ func TestOverlap(t *testing.T) {
 		},
 		{
 			descr: "overlap",
-			input: []Range{
+			input: []Interval{
 				{Start: 5, End: 13, Priority: 0},
 				{Start: 10, End: 20, Priority: 1},
 				{Start: 17, End: 25, Priority: 2},
 			},
-			want: []Range{
+			want: []Interval{
 				{Start: 5, End: 13, Priority: 0},
 				{Start: 13, End: 20, Priority: 1},
 				{Start: 20, End: 25, Priority: 2},
@@ -63,12 +63,12 @@ func TestOverlap(t *testing.T) {
 		},
 		{
 			descr: "overlap2",
-			input: []Range{
+			input: []Interval{
 				{Start: 5, End: 25, Priority: 3},
 				{Start: 10, End: 20, Priority: 2},
 				{Start: 13, End: 17, Priority: 1},
 			},
-			want: []Range{
+			want: []Interval{
 				{Start: 5, End: 10, Priority: 3},
 				{Start: 10, End: 13, Priority: 2},
 				{Start: 13, End: 17, Priority: 1},
@@ -78,13 +78,13 @@ func TestOverlap(t *testing.T) {
 		},
 		{
 			descr: "overlap3",
-			input: []Range{
+			input: []Interval{
 				{Start: 5, End: 10, Priority: 3},
 				{Start: 10, End: 25, Priority: 2},
 				{Start: 10, End: 20, Priority: 1},
 				{Start: 10, End: 15, Priority: 0},
 			},
-			want: []Range{
+			want: []Interval{
 				{Start: 5, End: 10, Priority: 3},
 				{Start: 10, End: 15, Priority: 0},
 				{Start: 15, End: 20, Priority: 1},
@@ -93,19 +93,19 @@ func TestOverlap(t *testing.T) {
 		},
 		{
 			descr: "single range",
-			input: []Range{
+			input: []Interval{
 				{Start: 5, End: 23, Priority: 0},
 			},
-			want: []Range{
+			want: []Interval{
 				{Start: 5, End: 23, Priority: 0},
 			},
 		},
 		{
 			descr: "negative start",
-			input: []Range{
+			input: []Interval{
 				{Start: -5, End: 23, Priority: 0},
 			},
-			want: []Range{
+			want: []Interval{
 				{Start: -5, End: 23, Priority: 0},
 			},
 		},
@@ -118,7 +118,7 @@ func TestOverlap(t *testing.T) {
 		}
 		for i := 0; i < len(got); i++ {
 			if got[i] != test.want[i] {
-				t.Errorf("Overlap(%s): range #%d: got %s, want %s", test.descr, i, got[i], test.want[i])
+				t.Errorf("Overlap(%s): interval #%d: got %s, want %s", test.descr, i, got[i], test.want[i])
 			}
 		}
 	}
