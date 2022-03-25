@@ -112,7 +112,7 @@ func TestOverlap(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := Overlap(test.input)
+		got := Sequence(test.input)
 		if len(got) != len(test.want) {
 			t.Fatalf("Overlap(%s): got %d items, want %d", test.descr, len(got), len(test.want))
 		}

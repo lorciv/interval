@@ -82,11 +82,11 @@ func (m *multiCounter) decr(priority int) {
 	(*m)[priority]--
 }
 
-// Overlap combines a list of potentially overlapping intervals into a list of sequential intervals,
+// Sequence combines a list of potentially overlapping intervals into a list of sequential intervals,
 // which are guaranteed not to overlap. Generated intervals are assigned the highest priority (i.e. lowest value)
 // computed from the input.
-func Overlap(intervals []Interval) []Interval {
-	var sequence []Interval
+func Sequence(intervals []Interval) []Interval {
+	var seq []Interval
 
 	curPrio := math.MaxInt // current priority
 	var count multiCounter
@@ -107,12 +107,12 @@ func Overlap(intervals []Interval) []Interval {
 		}
 
 		if prio != curPrio {
-			last := len(sequence) - 1
+			last := len(seq) - 1
 			if last >= 0 && curPrio < math.MaxInt {
-				sequence[last].End = e.time
+				seq[last].End = e.time
 			}
 			if prio < math.MaxInt {
-				sequence = append(sequence, Interval{
+				seq = append(seq, Interval{
 					Start:    e.time,
 					Priority: prio,
 				})
@@ -121,5 +121,5 @@ func Overlap(intervals []Interval) []Interval {
 		curPrio = prio
 	}
 
-	return sequence
+	return seq
 }
