@@ -12,7 +12,7 @@ import (
 // end is excluded. Intervals can be assigned a non-negative integer that represents its priority.
 // Increasing numbers (0, 1, 2, 3...) represent decreasing priority, with 0 being the highest.
 type Interval struct {
-	Start, End int
+	Start, End int64
 	Priority   int
 }
 
@@ -28,7 +28,7 @@ const (
 )
 
 type event struct {
-	time     int
+	time     int64
 	typ      eventType
 	priority int
 }
@@ -55,10 +55,10 @@ func eventify(intervals []Interval) []event {
 	sort.Slice(events, func(i, j int) bool {
 		d := events[i].time - events[j].time
 		if d == 0 {
-			d = int(events[i].typ) - int(events[j].typ)
+			d = int64(events[i].typ) - int64(events[j].typ)
 		}
 		if d == 0 {
-			d = events[i].priority - events[j].priority
+			d = int64(events[i].priority) - int64(events[j].priority)
 		}
 		return d < 0
 	})
