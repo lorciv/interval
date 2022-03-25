@@ -1,6 +1,6 @@
-// Package ranges implements operations to combine a set of overlapping intervals (e.g. time intervals)
+// Package intervals implements operations to combine a set of overlapping intervals (e.g. time intervals)
 // into a sequence that does not overlap. Priorities can be specified so that certain ranges prevail over others.
-package ranges
+package interval
 
 import (
 	"fmt"

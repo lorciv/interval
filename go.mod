@@ -1,3 +1,3 @@
-module github.com/lorciv/ranges
+module github.com/lorciv/interval
 
 go 1.17
