@@ -52,11 +52,14 @@ func eventify(intervals []Interval) []event {
 	}
 
 	sort.Slice(events, func(i, j int) bool {
+		// By time: chronological
 		d := events[i].time - events[j].time
 		if d == 0 {
+			// By type: start before end
 			d = int64(events[i].typ) - int64(events[j].typ)
 		}
 		if d == 0 {
+			// By priority: descending for start events, ascending for end events
 			d = int64(events[i].priority) - int64(events[j].priority)
 			if events[i].typ == eventEnd {
 				d *= -1
