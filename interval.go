@@ -4,7 +4,6 @@ package interval
 
 import (
 	"fmt"
-	"math"
 	"sort"
 )
 
@@ -88,37 +87,51 @@ func (m *multiCounter) decr(priority int) {
 func Sequence(intervals []Interval) []Interval {
 	var seq []Interval
 
-	curPrio := math.MaxInt // current priority
 	var count multiCounter
+
+	var current *Interval = nil
+
 	for _, e := range eventify(intervals) {
 		switch e.typ {
 		case eventStart:
 			count.incr(e.priority)
-		case eventEnd:
-			count.decr(e.priority)
-		}
-
-		prio := math.MaxInt // priority after last event
-		for i := 0; i < len(count); i++ {
-			if count[i] > 0 {
-				prio = i
+			if current != nil && current.Priority <= e.priority {
 				break
 			}
-		}
-
-		if prio != curPrio {
-			last := len(seq) - 1
-			if last >= 0 && curPrio < math.MaxInt {
-				seq[last].End = e.time
+			// Current interval ends (if any)
+			if current != nil {
+				current.End = e.time
+				seq = append(seq, *current)
 			}
-			if prio < math.MaxInt {
-				seq = append(seq, Interval{
-					Start:    e.time,
-					Priority: prio,
-				})
+			// New interval starts at higher priority
+			current = &Interval{
+				Start:    e.time,
+				Priority: e.priority,
+			}
+		case eventEnd:
+			count.decr(e.priority)
+			if count[current.Priority] > 0 {
+				break
+			}
+			// Current interval ends
+			current.End = e.time
+			seq = append(seq, *current)
+			// New interval starts at lower priority (if any)
+			found := false
+			for p := current.Priority + 1; p < len(count); p++ {
+				if count[p] > 0 {
+					current = &Interval{
+						Start:    e.time,
+						Priority: p,
+					}
+					found = true
+					break
+				}
+			}
+			if !found {
+				current = nil
 			}
 		}
-		curPrio = prio
 	}
 
 	return seq
