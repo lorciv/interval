@@ -58,6 +58,9 @@ func eventify(intervals []Interval) []event {
 		}
 		if d == 0 {
 			d = int64(events[i].priority) - int64(events[j].priority)
+			if events[i].typ == eventEnd {
+				d *= -1
+			}
 		}
 		return d < 0
 	})

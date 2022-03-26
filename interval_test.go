@@ -109,6 +109,29 @@ func TestOverlap(t *testing.T) {
 				{Start: -5, End: 23, Priority: 0},
 			},
 		},
+		{
+			descr: "non-consecutive priorities",
+			input: []Interval{
+				{Start: 0, End: 10, Priority: 4},
+				{Start: 3, End: 6, Priority: 2},
+			},
+			want: []Interval{
+				{Start: 0, End: 3, Priority: 4},
+				{Start: 3, End: 6, Priority: 2},
+				{Start: 6, End: 10, Priority: 4},
+			},
+		},
+		{
+			descr: "stacked",
+			input: []Interval{
+				{Start: 3, End: 10, Priority: 4},
+				{Start: 3, End: 10, Priority: 2},
+				{Start: 3, End: 10, Priority: 5},
+			},
+			want: []Interval{
+				{Start: 3, End: 10, Priority: 2},
+			},
+		},
 	}
 
 	for _, test := range tests {
