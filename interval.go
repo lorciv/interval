@@ -65,36 +65,20 @@ func eventify(intervals []Interval) []event {
 	return events
 }
 
-type multiCounter []int
-
-func (m *multiCounter) incr(priority int) {
-	for len(*m) < priority+1 {
-		*m = append(*m, 0)
-	}
-	(*m)[priority]++
-}
-
-func (m *multiCounter) decr(priority int) {
-	if len(*m) < priority+1 || (*m)[priority] == 0 {
-		panic("illegal counter decrement")
-	}
-	(*m)[priority]--
-}
-
 // Sequence combines a list of potentially overlapping intervals into a list of sequential intervals,
 // which are guaranteed not to overlap. Generated intervals are assigned the highest priority (i.e. lowest value)
 // computed from the input.
 func Sequence(intervals []Interval) []Interval {
 	var seq []Interval
 
-	var count multiCounter
+	count := make(map[int]int)
 
 	var current *Interval = nil
 
 	for _, e := range eventify(intervals) {
 		switch e.typ {
 		case eventStart:
-			count.incr(e.priority)
+			count[e.priority]++
 			if current != nil && current.Priority <= e.priority {
 				break
 			}
@@ -109,7 +93,7 @@ func Sequence(intervals []Interval) []Interval {
 				Priority: e.priority,
 			}
 		case eventEnd:
-			count.decr(e.priority)
+			count[e.priority]--
 			if count[current.Priority] > 0 {
 				break
 			}
@@ -117,18 +101,23 @@ func Sequence(intervals []Interval) []Interval {
 			current.End = e.time
 			seq = append(seq, *current)
 			// New interval starts at lower priority (if any)
-			found := false
-			for p := current.Priority + 1; p < len(count); p++ {
+			started := false
+			prios := make([]int, 0, len(count))
+			for p := range count {
+				prios = append(prios, p)
+			}
+			sort.Ints(prios)
+			for _, p := range prios {
 				if count[p] > 0 {
 					current = &Interval{
 						Start:    e.time,
 						Priority: p,
 					}
-					found = true
+					started = true
 					break
 				}
 			}
-			if !found {
+			if !started {
 				current = nil
 			}
 		}
