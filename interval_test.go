@@ -132,6 +132,18 @@ func TestOverlap(t *testing.T) {
 				{Start: 3, End: 10, Priority: 2},
 			},
 		},
+		{
+			descr: "partially stacked",
+			input: []Interval{
+				{Start: 3, End: 10, Priority: 4},
+				{Start: 5, End: 10, Priority: 2},
+				{Start: 7, End: 10, Priority: 5},
+			},
+			want: []Interval{
+				{Start: 3, End: 5, Priority: 4},
+				{Start: 5, End: 10, Priority: 2},
+			},
+		},
 	}
 
 	for _, test := range tests {
