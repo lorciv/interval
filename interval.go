@@ -107,7 +107,7 @@ func Sequence(intervals []Interval) []Interval {
 			current.End = e.time
 			seq = append(seq, *current)
 			// New interval starts at lower priority (if any)
-			started := false
+			current = nil
 			prios := make([]int, 0, len(count))
 			for p := range count {
 				prios = append(prios, p)
@@ -119,12 +119,8 @@ func Sequence(intervals []Interval) []Interval {
 						Start:    e.time,
 						Priority: p,
 					}
-					started = true
 					break
 				}
-			}
-			if !started {
-				current = nil
 			}
 		}
 	}
