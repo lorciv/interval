@@ -144,6 +144,17 @@ func TestSequence(t *testing.T) {
 				{Start: 5, End: 10, Priority: 2},
 			},
 		},
+		{
+			descr: "null intervals",
+			input: []Interval{
+				{Start: 0, End: 10, Priority: 1},
+				{Start: 3, End: 3, Priority: 0},
+				{Start: 6, End: 6, Priority: 0},
+			},
+			want: []Interval{
+				{Start: 0, End: 10, Priority: 1},
+			},
+		},
 	}
 
 	for _, test := range tests {

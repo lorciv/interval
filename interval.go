@@ -36,6 +36,9 @@ func eventify(intervals []Interval) []event {
 	var events []event
 
 	for _, v := range intervals {
+		if v.Start == v.End {
+			continue
+		}
 		if v.Start > v.End {
 			v.Start, v.End = v.End, v.Start
 		}
