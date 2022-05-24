@@ -2,7 +2,7 @@ package interval
 
 import "testing"
 
-func TestOverlap(t *testing.T) {
+func TestSequence(t *testing.T) {
 	tests := []struct {
 		descr string
 		input []Interval
